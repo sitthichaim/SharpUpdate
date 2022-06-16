@@ -40,9 +40,10 @@ namespace SharpUpdate
 
         private void btnDetail_Click(object sender, EventArgs e)
         {
-            if (this.updateInfo == null) this.updateInfoForm = new SharpUpdateInfoForm(this.info, this.updateInfo);
-        
+            if (this.updateInfoForm == null) this.updateInfoForm = new SharpUpdateInfoForm(this.info, this.updateInfo);
+
             this.updateInfoForm.ShowDialog(this);
+
         }
     }
 }
