@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<sharpUpdate>
+	<update appId="UpdateApp">
+		<version>2.0.0.0</version>
+		<url>http://devmeplz.ddns.net:8081/UpdateApp.exe</url>
+		<fileName>TestApp2.exe</fileName>
+		<md5>c8af1daff26bc02164e9fbb2916d91a9</md5>
+		<description>Intial Update</description>
+		<launchArgs></launchArgs>
+	</update>	
+</sharpUpdate>
