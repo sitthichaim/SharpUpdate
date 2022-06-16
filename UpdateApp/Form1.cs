@@ -2,17 +2,21 @@ using System.Windows.Forms;
 using System.Reflection;
 using System.Drawing;
 using SharpUpdate;
+using System.Diagnostics;
 
 namespace UpdateApp
 {
     public partial class Form1 : Form, SharpUpdateInterface
     {
 
+        private SharpUpdater updater;
+
         public Form1()
         {
             InitializeComponent();
 
-            this.label1.Text = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+            this.label1.Text = this.ApplicationAssembly.GetName().Version.ToString();
+            updater = new SharpUpdater(this);
         }
 
         public string ApplicationName => "UpdateApp";
@@ -29,7 +33,7 @@ namespace UpdateApp
 
         private void button1_Click(object sender, EventArgs e)
         {
-
+            updater.DoUpdate();
         }
     }
 }

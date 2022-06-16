@@ -76,7 +76,7 @@ namespace SharpUpdate
             string argument = "/C Choice /C Y /N /D Y /T 4 & Del /F /Q \"{0}\" & /C Choice /C Y /N /D Y /T 2 & Move /Y \"{1}\" \"{2}\" & Start \"\" /D \"{3}\" \"{4}\" {5}";
 
             ProcessStartInfo inf = new ProcessStartInfo();
-            inf.Arguments = string.Format(argument, currentPath, tempFilePath, newPath, Path.GetDirectoryName(newPath), Path.GetFileName(newPath), launchArgs;
+            inf.Arguments = string.Format(argument, currentPath, tempFilePath, newPath, Path.GetDirectoryName(newPath), Path.GetFileName(newPath), launchArgs);
             inf.WindowStyle = ProcessWindowStyle.Hidden;
             inf.CreateNoWindow = true;
             inf.FileName = "cmd.exe";

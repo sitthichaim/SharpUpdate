@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Net;
 using System.Xml;
+using System.Diagnostics;
 
 namespace SharpUpdate
 {
@@ -64,13 +65,12 @@ namespace SharpUpdate
 
         public static bool ExitsOnServer(Uri location)
         {
+            Debug.WriteLine("location.AbsoluteUri => " + location.AbsoluteUri);
             try
             {
-                HttpWebRequest req = (HttpWebRequest)WebRequest.Create(location.AbsoluteUri);
+                HttpWebRequest req =  (HttpWebRequest) WebRequest.Create(location.AbsoluteUri);
                 HttpWebResponse res = (HttpWebResponse)req.GetResponse();
-                res.Close();
-
-                return res.StatusCode == HttpStatusCode.OK;
+                return  res.StatusCode == HttpStatusCode.OK;
             }
             catch { return false; }
         }
@@ -82,8 +82,9 @@ namespace SharpUpdate
 
             try
             {
+
                 XmlDocument doc = new XmlDocument();
-                doc.LoadXml(location.AbsoluteUri);
+                doc.Load(location.AbsoluteUri);
 
                 XmlNode node = doc.DocumentElement.SelectSingleNode("//update[@appId='" + appId + "']");
                 if (node == null) return null;
