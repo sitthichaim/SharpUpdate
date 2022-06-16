@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <sharpUpdate>
-	<update appId="UpdateApp">
+	<update appId="UpdateApp" >
 		<version>2.0.0.0</version>
 		<url>http://devmeplz.ddns.net:8081/UpdateApp.exe</url>
 		<fileName>TestApp2.exe</fileName>
