@@ -1,15 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using System.ComponentModel;
 using System.IO;
 using System.Net;
+using System.Diagnostics;
 
 namespace SharpUpdate
 {
@@ -33,7 +27,8 @@ namespace SharpUpdate
         {
             InitializeComponent();
 
-            if (programIcon != null) this.Icon = programIcon;
+            if (programIcon != null) 
+                this.Icon = programIcon;
 
             tmpFile = Path.GetTempFileName();
 
@@ -44,7 +39,25 @@ namespace SharpUpdate
             webClient.DownloadFileCompleted += new AsyncCompletedEventHandler(webClient_DownloadFileCompleted);
         
             bgWorker = new BackgroundWorker();
-            bgWorker.DoWork += new DoWorkEventHandler(bgWorker_DoWorkEventHandler);
+            bgWorker.DoWork += new DoWorkEventHandler((sender, e) =>
+            {
+                string file = ((string[]) e.Argument)[0];
+                string updateMd5 = ((string[]) e.Argument)[1];
+
+                Debug.WriteLine("file -----------> " + file);
+                Debug.WriteLine("updateMd5 -----------> " + updateMd5);
+
+                if (Hasher.HashFile(file, HashType.MD5) != updateMd5)
+                {
+                    Debug.WriteLine("----------- IF -----------");
+                    e.Result = DialogResult.No;
+                }
+                else
+                {
+                    e.Result = DialogResult.OK;
+                }
+
+            });
             bgWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(bgWorker_RunWorkerCompletedEventHandler);
        
             try
@@ -54,10 +67,10 @@ namespace SharpUpdate
             catch
             {
                 this.DialogResult = DialogResult.No;
+                this.Close();
             }
         
         }
-
 
         private void bgWorker_RunWorkerCompletedEventHandler(object sender, RunWorkerCompletedEventArgs e)
         {
@@ -67,15 +80,27 @@ namespace SharpUpdate
 
         private void bgWorker_DoWorkEventHandler(object sender, DoWorkEventArgs e)
         {
-            string file = ((string[])e.Argument)[0];
-            string updateMd5 = ((string[])e.Argument)[1];
+            string file = ((string[]) e.Argument)[0];
+            string updateMd5 = ((string[]) e.Argument)[1];
 
-            if (Hasher.HashFile(file, HashType.HD5) != updateMd5) e.Result = DialogResult.No;
-            else e.Result = DialogResult.OK;
+            Debug.WriteLine("file -----------> " + file);
+            Debug.WriteLine("updateMd5 -----------> " + updateMd5);
+
+            if (Hasher.HashFile(file, HashType.MD5) != updateMd5)
+            {
+                Debug.WriteLine("----------- IF -----------");
+                e.Result = DialogResult.No;
+            }
+            else
+            {
+                e.Result = DialogResult.OK;
+            }
         }
 
         private void webClient_DownloadProgressCharged(object sender, DownloadProgressChangedEventArgs e)
         {
+            Debug.WriteLine("e.ProgressPercentage -----------> " + e.ProgressPercentage);
+            Debug.WriteLine("e.BytesReceived -----------> " + e.BytesReceived);
             this.progressBar.Value = e.ProgressPercentage;
             this.lbProgress.Text = String.Format("Downloaded {0} of {1}", FormatBytes(e.BytesReceived, 1, true), FormatBytes(e.TotalBytesToReceive, 1, true));
 
@@ -88,7 +113,7 @@ namespace SharpUpdate
                 this.DialogResult = DialogResult.No;
                 this.Close();
             }
-            else if (e.Cancelled != null)
+            else if (e.Cancelled)
             {
                 this.DialogResult = DialogResult.Abort;
                 this.Close();
